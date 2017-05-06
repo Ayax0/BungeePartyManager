@@ -39,7 +39,7 @@ public class PartyAPI {
 					}, 10, TimeUnit.SECONDS));
 					return true;
 				}else{Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.CANCEL));}
-			}else{host.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler befindet sich berreits in der Party"));}
+			}else{host.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Dieser Spieler befindet sich berreits in der Party"));}
 		}else{Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.DISSABLED));}
 		return false;
 	}
@@ -48,6 +48,7 @@ public class PartyAPI {
 		if(partyInvite.containsKey(player)){
 			if(partyInvite.get(player).containsKey(party)){
 				partyInvite.get(player).get(party).cancel();
+				partyInvite.get(player).remove(party);
 				playerParty.put(player, party);
 				party.join(player);
 				Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.ACCEPT));
@@ -55,7 +56,7 @@ public class PartyAPI {
 				return;
 			}
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du hast keine Einladung von diesem Spieler"));
+		player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du hast keine Einladung von diesem Spieler"));
 	}
 	
 	public static void declineInvite(ProxiedPlayer player, ProxiedPlayer host, ProxyParty party){
@@ -67,7 +68,7 @@ public class PartyAPI {
 				return;
 			}
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du hast keine Einladung von dieser Person"));
+		player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du hast keine Einladung von dieser Person"));
 	}
 	
 	public static void leaveParty(ProxiedPlayer player, ProxyParty party){
@@ -78,11 +79,11 @@ public class PartyAPI {
 					party.quit(player);
 					return;
 				}
-				player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du kannst als Owner die Party nicht verlassen"));
+				player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du kannst als Owner die Party nicht verlassen"));
 				return;
 			}
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du bist kein Mitglied dieser Party"));
+		player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du bist kein Mitglied dieser Party"));
 	}
 	
 	public static void togglePartyRequests(ProxiedPlayer player){
@@ -125,9 +126,9 @@ public class PartyAPI {
 		}
 	}
 	
-	public static void sendResourcePackToParty(ProxyParty party, String resource){
+	public static void sendResourcePackToParty(ProxyParty party){
 		for(ProxiedPlayer player : party.getMember()){
-			player.sendData("MC|Rpack", resource.getBytes());
+			//
 		}
 	}
 

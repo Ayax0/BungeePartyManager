@@ -4,8 +4,10 @@ import ch.simonsky.partysystem.commands.Party_CMD;
 import ch.simonsky.partysystem.listener.PartyInviteCloseListener;
 import ch.simonsky.partysystem.listener.PartyInviteListener;
 import ch.simonsky.partysystem.listener.PartyQuitListener;
+import ch.simonsky.partysystem.listener.PlayerQuitListener;
 import ch.simonsky.partysystem.manager.MySQL;
 import ch.simonsky.partysystem.manager.MySQLConfig;
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -24,6 +26,8 @@ public class Main extends Plugin{
 		MySQL.connect(MySQLConfig.getHost(), MySQLConfig.getPort(), MySQLConfig.getDatabase(), MySQLConfig.getUsername(), MySQLConfig.getPasswort());
 		MySQL.createTable();
 		
+		BungeeCord.getInstance().registerChannel("Resourcepack");
+		
 		PluginManager pm = ProxyServer.getInstance().getPluginManager();
 		pm.registerCommand(this, new Party_CMD("party"));
 		pm.registerCommand(this, new Party_CMD("p"));
@@ -31,6 +35,7 @@ public class Main extends Plugin{
 		pm.registerListener(this, new PartyInviteCloseListener());
 		pm.registerListener(this, new PartyInviteListener());
 		pm.registerListener(this, new PartyQuitListener());
+		pm.registerListener(this, new PlayerQuitListener());
 	}
 
 }

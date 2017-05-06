@@ -10,7 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class Party_CMD extends Command{
+public class Party_CMD extends Command {
 
 	public Party_CMD(String name) {
 		super(name);
@@ -32,11 +32,11 @@ public class Party_CMD extends Command{
 								
 									ProxyParty party = PartyAPI.getPlayerParty(p);
 									PartyAPI.invite(member, p, party);
-									p.sendMessage(new TextComponent(Main.prefix + ChatColor.GRAY + "Du hast eine Party-Anfrage an " + ChatColor.GOLD + member.getName() + ChatColor.GRAY + " versendet"));
-								}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler hat Party-Anfragen deaktiviert"));}
-							}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du befindest dich bereits in einer Party"));}
-						}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party invite [Player]"));}
+									p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GRAY + "Du hast eine Party-Anfrage an " + ChatColor.GOLD + member.getName() + ChatColor.GRAY + " versendet"));
+								}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Dieser Spieler hat Party-Anfragen deaktiviert"));}
+							}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du befindest dich bereits in einer Party"));}
+						}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party invite [Player]"));}
 				}
 				
 				//party accept [Player]
@@ -46,9 +46,9 @@ public class Party_CMD extends Command{
 							ProxiedPlayer owner = ProxyServer.getInstance().getPlayer(args[1]);
 							if((PartyAPI.isPlayerInParty(owner) && PartyAPI.getPlayerParty(owner).getOwner() == owner) || !PartyAPI.isPlayerInParty(owner)){
 								PartyAPI.acceptInvite(p, owner, PartyAPI.getPlayerParty(owner));
-							}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler ist nicht Owner dieser Party"));}
-						}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party accept [Player]"));}
+							}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Dieser Spieler ist nicht Owner dieser Party"));}
+						}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party accept [Player]"));}
 				}
 				
 				//party decline [Player]
@@ -58,9 +58,9 @@ public class Party_CMD extends Command{
 							ProxiedPlayer owner = ProxyServer.getInstance().getPlayer(args[1]);
 							if((PartyAPI.isPlayerInParty(owner) && PartyAPI.getPlayerParty(owner).getOwner() == owner) || !PartyAPI.isPlayerInParty(owner)){
 								PartyAPI.declineInvite(p, owner, PartyAPI.getPlayerParty(owner));
-							}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler ist nicht Owner dieser Party"));}
-						}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party decline [Player]"));}
+							}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Dieser Spieler ist nicht Owner dieser Party"));}
+						}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party decline [Player]"));}
 				}
 				
 				//party leave
@@ -69,18 +69,18 @@ public class Party_CMD extends Command{
 						if(PartyAPI.getPlayerParty(p).getOwner() != p){
 							PartyAPI.leaveParty(p, PartyAPI.getPlayerParty(p));
 						}else{
-							p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du kannst als Owner die Party nicht verlassen"));
-							p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Benutze " + ChatColor.GOLD + "/party disband " + ChatColor.RED + "um die Party aufzulösen"));
+							p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du kannst als Owner die Party nicht verlassen"));
+							p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Benutze " + ChatColor.GOLD + "/party disband " + ChatColor.RED + "um die Party aufzulösen"));
 						}
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du befindest dich in keiner Party"));}
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du befindest dich in keiner Party"));}
 				}
 				
 				//party owner
 				if(args[0].equalsIgnoreCase("owner")){
 					if(PartyAPI.isPlayerInParty(p)){
 						ProxiedPlayer owner = PartyAPI.getPlayerParty(p).getOwner();
-						p.sendMessage(new TextComponent(Main.prefix + ChatColor.GRAY + "Der Spieler " + ChatColor.GOLD + owner.getName() + ChatColor.GRAY + " ist der Owner dieser Party"));
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du befindest dich in keiner Party"));}
+						p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GRAY + "Der Spieler " + ChatColor.GOLD + owner.getName() + ChatColor.GRAY + " ist der Owner dieser Party"));
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du befindest dich in keiner Party"));}
 				}
 				
 				//party disband
@@ -88,26 +88,32 @@ public class Party_CMD extends Command{
 					if(PartyAPI.isPlayerInParty(p)){
 						if(PartyAPI.getPlayerParty(p).getOwner() == p){
 							PartyAPI.disbandParty(PartyAPI.getPlayerParty(p));
-						}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Die Party kan nur vom Owner aufgelösst werden"));}
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du befindest dich in keiner Party"));}
+						}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Die Party kan nur vom Owner aufgelösst werden"));}
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du befindest dich in keiner Party"));}
 				}
 				
 				//party toggle
 				if(args[0].equalsIgnoreCase("toggle")){
 					PartyAPI.togglePartyRequests(p);
 					if(PartyAPI.canPlayerGetInvite(p)){
-						p.sendMessage(new TextComponent(Main.prefix + ChatColor.GREEN + "Spieler können dich nun in eine Party einladen"));
-					}else{p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Spieler können dich nun nicht mehr in eine Party einladen"));}
+						p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GREEN + "Spieler können dich nun in eine Party einladen"));
+					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Spieler können dich nun nicht mehr in eine Party einladen"));}
+				}
+				
+				//Unused
+				if(args[0].equalsIgnoreCase("resource")){
+					p.sendMessage(new TextComponent("Sending resource..."));
+					PartyAPI.sendResourcePackToParty(PartyAPI.getPlayerParty(p));
 				}
 			}else{
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.DARK_PURPLE + "-< " + ChatColor.GOLD + "Party Commands" + ChatColor.DARK_PURPLE + " >-"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party invite [Player]"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party accept [Player]"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party decline [Player]"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party leave"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party owner"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party disband"));
-				p.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "/party toggle"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.DARK_PURPLE + "-< " + ChatColor.GOLD + "Party Commands" + ChatColor.DARK_PURPLE + " >-"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party invite [Player]"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party accept [Player]"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party decline [Player]"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party leave"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party owner"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party disband"));
+				p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party toggle"));
 			}
 		}
 	}

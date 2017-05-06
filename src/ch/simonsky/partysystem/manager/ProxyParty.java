@@ -28,7 +28,7 @@ public class ProxyParty {
 			Utils.callEvent(new PartyJoinEvent(player, this));
 			return;
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du bist der Party bereits beigetreten"));
+		player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du bist der Party bereits beigetreten"));
 	}
 	
 	public void quit(ProxiedPlayer player){
@@ -38,14 +38,12 @@ public class ProxyParty {
 				return;
 			}
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Es ist ein Fehler aufgetreten"));
+		player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Es ist ein Fehler aufgetreten"));
 	}
 	
 	public void close(){
 		if(!member.isEmpty()){
-			System.out.println(member);
 			for(ProxiedPlayer player : member){
-				System.out.println(player.getName());
 				Utils.callEvent(new PartyQuitEvent(player, this, QuitReason.CLOSE_QUIT));
 			}
 		}
