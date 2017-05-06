@@ -3,14 +3,11 @@ package ch.simonsky.partysystem.api;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import ch.simonsky.partysystem.Main;
 import ch.simonsky.partysystem.enums.InviteCancelReason;
-import ch.simonsky.partysystem.enums.QuitReason;
 import ch.simonsky.partysystem.events.PartyInviteCloseEvent;
 import ch.simonsky.partysystem.events.PartyInviteEvent;
 import ch.simonsky.partysystem.events.PartyJoinEvent;
-import ch.simonsky.partysystem.events.PartyQuitEvent;
 import ch.simonsky.partysystem.manager.MySQL;
 import ch.simonsky.partysystem.manager.ProxyParty;
 import ch.simonsky.partysystem.manager.Utils;
@@ -23,53 +20,54 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class PartyAPI {
 	
-	private static HashMap<ProxiedPlayer, ProxyParty> playerParty = new HashMap<>();
-	private static HashMap<ProxiedPlayer, HashMap<ProxyParty, ScheduledTask>> partyInvite = new HashMap<>();
+	public static HashMap<ProxiedPlayer, ProxyParty> playerParty = new HashMap<>();
+	public static HashMap<ProxiedPlayer, HashMap<ProxyParty, ScheduledTask>> partyInvite = new HashMap<>();
 	
-	public static boolean invite(ProxiedPlayer player, ProxyParty party){
-		if(!MySQL.doesPlayerExists(player) || MySQL.getState(player)){
-			if(isPlayerInParty(player, party)){
+	public static boolean invite(ProxiedPlayer player, ProxiedPlayer host, ProxyParty party){
+		if(canPlayerGetInvite(player)){
+			if(!isPlayerInParty(player, party)){
 				if(!partyInvite.containsKey(player)){partyInvite.put(player, new HashMap<>());}
 				if(!partyInvite.get(player).containsKey(party)){
-					Utils.callEvent(new PartyInviteEvent(player, party));
+					Utils.callEvent(new PartyInviteEvent(player, host, party));
 					partyInvite.get(player).put(party, ProxyServer.getInstance().getScheduler().schedule(Main.instance, new Runnable() {
 						
 						@Override
 						public void run() {
-							Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.TIMEOUT));
+							Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.TIMEOUT));
 							partyInvite.get(player).remove(party);
 						}
 					}, 10, TimeUnit.SECONDS));
 					return true;
-				}else{Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.CANCEL));}
-			}
-		}else{Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.DISSABLED));}
+				}else{Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.CANCEL));}
+			}else{host.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler befindet sich berreits in der Party"));}
+		}else{Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.DISSABLED));}
 		return false;
 	}
 	
-	public static void acceptInvite(ProxiedPlayer player, ProxyParty party){
+	public static void acceptInvite(ProxiedPlayer player, ProxiedPlayer host, ProxyParty party){
 		if(partyInvite.containsKey(player)){
 			if(partyInvite.get(player).containsKey(party)){
 				partyInvite.get(player).get(party).cancel();
 				playerParty.put(player, party);
 				party.join(player);
-				Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.ACCEPT));
+				Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.ACCEPT));
 				Utils.callEvent(new PartyJoinEvent(player, party));
 				return;
 			}
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du hast keine Einladung in diese Party"));
+		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du hast keine Einladung von diesem Spieler"));
 	}
 	
-	public static void declineInvite(ProxiedPlayer player, ProxyParty party){
+	public static void declineInvite(ProxiedPlayer player, ProxiedPlayer host, ProxyParty party){
 		if(partyInvite.containsKey(player)){
 			if(partyInvite.get(player).containsKey(party)){
 				partyInvite.get(player).get(party).cancel();
-				Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.DECLINE));
+				partyInvite.get(player).remove(party);
+				Utils.callEvent(new PartyInviteCloseEvent(player, host, party, InviteCancelReason.DECLINE));
 				return;
 			}
 		}
-		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du hast keine Einladung in diese Party"));
+		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du hast keine Einladung von dieser Person"));
 	}
 	
 	public static void leaveParty(ProxiedPlayer player, ProxyParty party){
@@ -78,7 +76,6 @@ public class PartyAPI {
 				if(party.getOwner() != player){
 					playerParty.remove(player);
 					party.quit(player);
-					Utils.callEvent(new PartyQuitEvent(player, party, QuitReason.NORMAL_QUIT));
 					return;
 				}
 				player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Du kannst als Owner die Party nicht verlassen"));
@@ -90,6 +87,11 @@ public class PartyAPI {
 	
 	public static void togglePartyRequests(ProxiedPlayer player){
 		MySQL.toggleState(player);
+	}
+	
+	public static boolean canPlayerGetInvite(ProxiedPlayer player){
+		if(!MySQL.doesPlayerExists(player)){return true;}
+		return MySQL.getState(player);
 	}
 	
 	public static ProxiedPlayer getOwner(ProxyParty party){
@@ -109,7 +111,12 @@ public class PartyAPI {
 	}
 	
 	public static boolean isPlayerInParty(ProxiedPlayer player, ProxyParty party){
+		if(party == null){return false;}
 		return party.getMember().contains(player);
+	}
+	
+	public static boolean isPlayerInParty(ProxiedPlayer player){
+		return playerParty.containsKey(player);
 	}
 	
 	public static void sendPartyToServer(ProxyParty party, ServerInfo server){

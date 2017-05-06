@@ -32,19 +32,22 @@ public class ProxyParty {
 	}
 	
 	public void quit(ProxiedPlayer player){
-		if(member.contains(player)){
-			member.remove(player);
-			Utils.callEvent(new PartyQuitEvent(player, this, QuitReason.NORMAL_QUIT));
-			return;
+		if(!member.isEmpty()){
+			if(member.contains(player)){
+				Utils.callEvent(new PartyQuitEvent(player, this, QuitReason.NORMAL_QUIT));
+				return;
+			}
 		}
 		player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Es ist ein Fehler aufgetreten"));
 	}
 	
 	public void close(){
-		for(ProxiedPlayer player : member){
-			member.remove(player);
-			Utils.callEvent(new PartyQuitEvent(player, this, QuitReason.CLOSE_QUIT));
-			player.sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Die Party wurde aufgelösst"));
+		if(!member.isEmpty()){
+			System.out.println(member);
+			for(ProxiedPlayer player : member){
+				System.out.println(player.getName());
+				Utils.callEvent(new PartyQuitEvent(player, this, QuitReason.CLOSE_QUIT));
+			}
 		}
 		Utils.callEvent(new PartyCloseEvent(this));
 	}

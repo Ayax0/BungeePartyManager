@@ -48,7 +48,7 @@ public class MySQL {
 	
 	public static void toggleState(ProxiedPlayer player){
 		try {
-			if(doesPlayerExists(player)){
+			if(!doesPlayerExists(player)){
 				PreparedStatement ps = con.prepareStatement("INSERT INTO Partyrequest_toggle (UUID,Name,state) VALUES (?,?,?)");
 				ps.setString(1, player.getUniqueId().toString());
 				ps.setString(2, player.getName());
@@ -68,12 +68,13 @@ public class MySQL {
 	}
 	
 	public static boolean doesPlayerExists(ProxiedPlayer player){
-		try{
-			PreparedStatement ps = con.prepareStatement("SELECT * FROM Partyrequest_toggle WHERE UUID = ?");
+		try {
+			PreparedStatement ps = con.prepareStatement("SELECT state FROM Partyrequest_toggle WHERE UUID = ?");
 			ps.setString(1, player.getUniqueId().toString());
 			ResultSet rs = ps.executeQuery();
+			
 			return rs.next();
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;

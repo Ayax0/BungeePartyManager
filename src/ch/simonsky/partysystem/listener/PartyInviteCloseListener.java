@@ -19,7 +19,7 @@ public class PartyInviteCloseListener implements Listener{
 			}
 		}
 		if(e.getReason() == InviteCancelReason.CANCEL){
-			e.getParty().getOwner().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.RED + " wurde bereits eingeladen"));
+			e.getHost().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.RED + " wurde bereits eingeladen"));
 		}
 		if(e.getReason() == InviteCancelReason.DECLINE){
 			for(ProxiedPlayer player : e.getParty().getMember()){
@@ -27,10 +27,11 @@ public class PartyInviteCloseListener implements Listener{
 			}
 		}
 		if(e.getReason() == InviteCancelReason.DISSABLED){
-			e.getParty().getOwner().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler hat Party-Anfragen deaktiviert"));
+			e.getHost().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Dieser Spieler hat Party-Anfragen deaktiviert"));
 		}
 		if(e.getReason() == InviteCancelReason.TIMEOUT){
-			e.getParty().getOwner().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Die Party-Annfrage an " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.RED + " ist abgelaufen"));
+			e.getHost().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Die Party-Annfrage an " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.RED + " ist ausgelaufen"));
+			e.getPlayer().sendMessage(new TextComponent(Main.prefix + ChatColor.RED + "Die Party-Anfrage von " + ChatColor.GOLD + e.getHost().getName() + ChatColor.RED + " ist ausgelaufen"));
 		}
 	}
 
