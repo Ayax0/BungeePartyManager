@@ -11,6 +11,7 @@ import ch.simonsky.partysystem.events.PartyInviteCloseEvent;
 import ch.simonsky.partysystem.events.PartyInviteEvent;
 import ch.simonsky.partysystem.events.PartyJoinEvent;
 import ch.simonsky.partysystem.events.PartyQuitEvent;
+import ch.simonsky.partysystem.manager.MySQL;
 import ch.simonsky.partysystem.manager.ProxyParty;
 import ch.simonsky.partysystem.manager.Utils;
 import net.md_5.bungee.api.ChatColor;
@@ -26,19 +27,23 @@ public class PartyAPI {
 	private static HashMap<ProxiedPlayer, HashMap<ProxyParty, ScheduledTask>> partyInvite = new HashMap<>();
 	
 	public static boolean invite(ProxiedPlayer player, ProxyParty party){
-		Utils.callEvent(new PartyInviteEvent(player, party));
-		if(!partyInvite.containsKey(player)){partyInvite.put(player, new HashMap<>());}
-		if(!partyInvite.get(player).containsKey(party)){
-			partyInvite.get(player).put(party, ProxyServer.getInstance().getScheduler().schedule(Main.instance, new Runnable() {
-				
-				@Override
-				public void run() {
-					Utils.callEvent(new PartyInviteCloseEvent(player, InviteCancelReason.TIMEOUT));
-					partyInvite.get(player).remove(party);
-				}
-			}, 10, TimeUnit.SECONDS));
-			return true;
-		}
+		if(!MySQL.doesPlayerExists(player) || MySQL.getState(player)){
+			if(isPlayerInParty(player, party)){
+				if(!partyInvite.containsKey(player)){partyInvite.put(player, new HashMap<>());}
+				if(!partyInvite.get(player).containsKey(party)){
+					Utils.callEvent(new PartyInviteEvent(player, party));
+					partyInvite.get(player).put(party, ProxyServer.getInstance().getScheduler().schedule(Main.instance, new Runnable() {
+						
+						@Override
+						public void run() {
+							Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.TIMEOUT));
+							partyInvite.get(player).remove(party);
+						}
+					}, 10, TimeUnit.SECONDS));
+					return true;
+				}else{Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.CANCEL));}
+			}
+		}else{Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.DISSABLED));}
 		return false;
 	}
 	
@@ -48,7 +53,7 @@ public class PartyAPI {
 				partyInvite.get(player).get(party).cancel();
 				playerParty.put(player, party);
 				party.join(player);
-				Utils.callEvent(new PartyInviteCloseEvent(player, InviteCancelReason.ACCEPT));
+				Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.ACCEPT));
 				Utils.callEvent(new PartyJoinEvent(player, party));
 				return;
 			}
@@ -60,7 +65,7 @@ public class PartyAPI {
 		if(partyInvite.containsKey(player)){
 			if(partyInvite.get(player).containsKey(party)){
 				partyInvite.get(player).get(party).cancel();
-				Utils.callEvent(new PartyInviteCloseEvent(player, InviteCancelReason.DECLINE));
+				Utils.callEvent(new PartyInviteCloseEvent(player, party, InviteCancelReason.DECLINE));
 				return;
 			}
 		}
@@ -84,7 +89,7 @@ public class PartyAPI {
 	}
 	
 	public static void togglePartyRequests(ProxiedPlayer player){
-		//MySQL
+		MySQL.toggleState(player);
 	}
 	
 	public static ProxiedPlayer getOwner(ProxyParty party){
@@ -101,6 +106,10 @@ public class PartyAPI {
 	
 	public static ProxyParty getPlayerParty(ProxiedPlayer player){
 		return playerParty.get(player);
+	}
+	
+	public static boolean isPlayerInParty(ProxiedPlayer player, ProxyParty party){
+		return party.getMember().contains(player);
 	}
 	
 	public static void sendPartyToServer(ProxyParty party, ServerInfo server){

@@ -5,7 +5,8 @@ public enum InviteCancelReason {
 	TIMEOUT(0),
 	DECLINE(1),
 	ACCEPT(2),
-	CANCEL(3);
+	DISSABLED(3),
+	CANCEL(4);
 	
 	int id;
 	

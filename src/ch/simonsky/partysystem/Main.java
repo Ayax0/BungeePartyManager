@@ -1,5 +1,7 @@
 package ch.simonsky.partysystem;
 
+import ch.simonsky.partysystem.manager.MySQL;
+import ch.simonsky.partysystem.manager.MySQLConfig;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -12,6 +14,9 @@ public class Main extends Plugin{
 	public void onEnable() {
 		instance = this;
 		
+		MySQLConfig.createIfNotExists();
+		MySQL.connect(MySQLConfig.getHost(), MySQLConfig.getPort(), MySQLConfig.getDatabase(), MySQLConfig.getUsername(), MySQLConfig.getPasswort());
+		MySQL.createTable();
 	}
 
 }
