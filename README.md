@@ -10,3 +10,7 @@
 * **/party owner**                -       Zeigt den Owner der Party an
 * **/party disband**              -       Löst eine Party auf (Nur als Party-Owner möglich)
 * **/party toggle**               -       Aktiviert/Deaktiviert Party-Anfragen
+
+## Wiki
+
+* [Wiki](https://github.com/SimonSkyTV/unge-partysystem/wiki/https://github.com/SimonSkyTV/unge-partysystem/wiki)
