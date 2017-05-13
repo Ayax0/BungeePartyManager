@@ -3,9 +3,9 @@
 
 ## Commands
 
-* /party invite <Name>
-* /party accept <Name>
-* /party decline <Name>
+* /party invite [Name]
+* /party accept [Name]
+* /party decline [Name]
 * /party leave
 * /party owner
 * /party disband
