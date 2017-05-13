@@ -13,4 +13,4 @@
 
 ## Wiki
 
-* [Wiki](https://github.com/SimonSkyTV/unge-partysystem/wiki/https://github.com/SimonSkyTV/unge-partysystem/wiki)
+* [Wiki](https://github.com/SimonSkyTV/unge-partysystem/wiki/Home)
