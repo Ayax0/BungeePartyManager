@@ -1,6 +1,7 @@
 package ch.simonsky.partysystem.listener;
 
 import ch.simonsky.partysystem.Main;
+import ch.simonsky.partysystem.api.PartyAPI;
 import ch.simonsky.partysystem.enums.InviteCancelReason;
 import ch.simonsky.partysystem.events.PartyInviteCloseEvent;
 import net.md_5.bungee.api.ChatColor;
@@ -17,6 +18,7 @@ public class PartyInviteCloseListener implements Listener{
 			for(ProxiedPlayer player : e.getParty().getMember()){
 				player.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GRAY + "Der Spieler " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.GRAY + " ist der Party beigetreten"));
 			}
+			return;
 		}
 		if(e.getReason() == InviteCancelReason.CANCEL){
 			e.getHost().sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.RED + " wurde bereits eingeladen"));
@@ -32,6 +34,9 @@ public class PartyInviteCloseListener implements Listener{
 		if(e.getReason() == InviteCancelReason.TIMEOUT){
 			e.getHost().sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Die Party-Annfrage an " + ChatColor.GOLD + e.getPlayer().getName() + ChatColor.RED + " ist ausgelaufen"));
 			e.getPlayer().sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Die Party-Anfrage von " + ChatColor.GOLD + e.getHost().getName() + ChatColor.RED + " ist ausgelaufen"));
+		}
+		if(e.getParty().getMember().size() <= 1){
+			PartyAPI.disbandParty(e.getParty());
 		}
 	}
 
