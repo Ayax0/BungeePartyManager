@@ -1,5 +1,5 @@
-# unge-partysystem
-**Unge-Partysystem** ist ein Partysystem welches für bewerbungszwecke für das ungeserverteam gecodet wurde.
+# BungeePartyManager
+**BungeePartyManager** ist ein Partysystem welches speziell auf Bungeecord Netwerke ausgelegt ist.
 
 ## Commands
 
@@ -13,4 +13,4 @@
 
 ## Wiki
 
-* [Wiki](https://github.com/SimonSkyTV/unge-partysystem/wiki/Home)
+* [Wiki](https://github.com/SimonSkyTV/BungeePartyManager/wiki/Home)
