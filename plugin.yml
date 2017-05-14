@@ -1,4 +1,4 @@
 main: ch.simonsky.partysystem.Main
-name: PartySystem
-version: 0.1
+name: BungeePartyManager
+version: 0.2
 author: SimonSky

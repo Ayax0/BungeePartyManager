@@ -12,13 +12,9 @@ public class MySQL {
 	
 	public static Connection con;
 	
-	public static void connect(String host, String port, String database, String username, String password){
-		try {
-			if(!isConnected()){
-				con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public static void connect(String host, String port, String database, String username, String password) throws SQLException{
+		if(!isConnected()){
+			con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
 		}
 	}
 	

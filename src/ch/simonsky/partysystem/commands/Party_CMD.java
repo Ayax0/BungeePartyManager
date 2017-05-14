@@ -26,15 +26,17 @@ public class Party_CMD extends Command {
 					if(args.length > 1){
 						if(ProxyServer.getInstance().getPlayer(args[1]) != null){
 							ProxiedPlayer member = ProxyServer.getInstance().getPlayer(args[1]);
-							if(!PartyAPI.isPlayerInParty(p)){
-								if(PartyAPI.canPlayerGetInvite(member)){
-									PartyAPI.playerParty.put(p, new ProxyParty(p));
-								
-									ProxyParty party = PartyAPI.getPlayerParty(p);
-									PartyAPI.invite(member, p, party);
-									p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GRAY + "Du hast eine Party-Anfrage an " + ChatColor.GOLD + member.getName() + ChatColor.GRAY + " versendet"));
-								}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Dieser Spieler hat Party-Anfragen deaktiviert"));}
-							}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du befindest dich bereits in einer Party"));}
+							if(!member.equals(p)){
+								if(!PartyAPI.isPlayerInParty(p)){
+									if(PartyAPI.canPlayerGetInvite(member)){
+										PartyAPI.playerParty.put(p, new ProxyParty(p));
+									
+										ProxyParty party = PartyAPI.getPlayerParty(p);
+										PartyAPI.invite(member, p, party);
+										p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GRAY + "Du hast eine Party-Anfrage an " + ChatColor.GOLD + member.getName() + ChatColor.GRAY + " versendet"));
+									}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Dieser Spieler hat Party-Anfragen deaktiviert"));}
+								}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du befindest dich bereits in einer Party"));}
+							}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Du kannst dich nicht selber einladen!"));}
 						}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Der Spieler " + ChatColor.GOLD + args[1] + ChatColor.RED + " ist nicht online"));}
 					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "/party invite [Player]"));}
 				}
@@ -94,10 +96,15 @@ public class Party_CMD extends Command {
 				
 				//party toggle
 				if(args[0].equalsIgnoreCase("toggle")){
-					PartyAPI.togglePartyRequests(p);
-					if(PartyAPI.canPlayerGetInvite(p)){
-						p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GREEN + "Spieler können dich nun in eine Party einladen"));
-					}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Spieler können dich nun nicht mehr in eine Party einladen"));}
+					if(Main.mysql){
+						PartyAPI.togglePartyRequests(p);
+						if(PartyAPI.canPlayerGetInvite(p)){
+							p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.GREEN + "Spieler können dich nun in eine Party einladen"));
+						}else{p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Spieler können dich nun nicht mehr in eine Party einladen"));}
+					}else{
+						p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "MySQL Connection not found!"));
+						p.sendMessage(TextComponent.fromLegacyText(Main.prefix + ChatColor.RED + "Bitte kontaktiere einen Administrator"));
+					}
 				}
 				
 				//Unused

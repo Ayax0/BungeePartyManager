@@ -91,8 +91,12 @@ public class PartyAPI {
 	}
 	
 	public static boolean canPlayerGetInvite(ProxiedPlayer player){
-		if(!MySQL.doesPlayerExists(player)){return true;}
-		return MySQL.getState(player);
+		if(Main.mysql){
+			if(!MySQL.doesPlayerExists(player)){return true;}
+			return MySQL.getState(player);
+		}else{
+			return true;
+		}
 	}
 	
 	public static ProxiedPlayer getOwner(ProxyParty party){
